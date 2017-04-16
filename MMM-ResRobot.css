@@ -32,3 +32,17 @@
 .destination {
     align: left;
 }
+
+.late {
+    color: #ff0000;
+    width: 25%;
+    align: left;
+    padding-right: 20px;
+}
+
+.ontime {
+    color: #458b00;
+    width: 25%;
+    align: left;
+    padding-right: 20px;
+}

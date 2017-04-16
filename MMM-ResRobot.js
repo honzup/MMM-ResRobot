@@ -12,7 +12,7 @@ Module.register("MMM-ResRobot",{
 
 	// Define module defaults
 	defaults: {
-		updateInterval: 5 * 50 * 1000,	// Update every 5 minutes.
+		updateInterval: 5 * 60 * 1000,	// Update every 5 minutes.
 		animationSpeed: 2000,
 		fade: true,
 		fadePoint: 0.25,	// Start on 1/4th of the list.
@@ -66,6 +66,8 @@ Module.register("MMM-ResRobot",{
 		}
 	},
 
+	
+
 	// Override dom generator.
 	getDom: function() {
 		var wrapper = document.createElement("div");
@@ -82,6 +84,7 @@ Module.register("MMM-ResRobot",{
 			return wrapper;
 		}
 
+		
 		var table = document.createElement("table");
 		table.className = "small";
 
@@ -97,6 +100,29 @@ Module.register("MMM-ResRobot",{
 			var depTimeCell = document.createElement("td");
 			depTimeCell.className = "departuretime";
 			depTimeCell.innerHTML = departure.departuretime;
+			row.appendChild(depTimeCell);
+
+			var depTimeCell = document.createElement("td");
+			depTimeCell.className = "departuretime";
+			
+		
+			if (departure.actualdeparturetime.includes("Invalid date") ) {
+
+				depTimeCell.innerHTML = "On Time";
+				depTimeCell.className = "ontime";
+			
+			} else if (departure.departuretime === departure.actualdeparturetime) {
+
+				depTimeCell.innerHTML = "On Time";
+				depTimeCell.className = "ontime";
+
+			} else {
+
+				depTimeCell.innerHTML = departure.actualdeparturetime;
+				depTimeCell.className = "late";
+			}
+			
+			
 			row.appendChild(depTimeCell);
 
 			var depTypeCell = document.createElement("td");

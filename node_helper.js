@@ -40,6 +40,8 @@ module.exports = NodeHelper.create({
 	updateTimetable: function() {
 		var self = this;
 
+
+		
 		// Reset all departures
 		this.departures = [];
 
@@ -94,7 +96,9 @@ module.exports = NodeHelper.create({
 		for (var i in data.Departure) {
 			var departure = data.Departure[i];
 			var departureTime = moment(departure.date + " " + departure.time);
+			var actualdepartureTime = moment(departure.rtDate + " " + departure.rtTime);
 			var waitingTime = moment.duration(departureTime.diff(now));
+			var actualwaitingTime = moment.duration(actualdepartureTime.diff(now));
 			var departureTo = departure.direction;
 			var departureType = departure.Product.catOutS;
 			// If truncation is requested, truncate ending station at first word break after n characters
@@ -103,11 +107,30 @@ module.exports = NodeHelper.create({
 					departureTo = departureTo.substring(0, departureTo.indexOf(" ",this.config.truncateAfter));
 				}
 			}
+
+			
+			
 			// Only save departures that occurs in the future (silently skip the past ones)
+			if (actualwaitingTime.get("minutes") > this.config.skipMinutes) {
+				this.departures.push({
+					timestamp: actualdepartureTime,			// Departure timestamp, used for sorting
+					departuretime: departureTime.format("HH:mm"),	// Departure time in HH:mm, used for display
+					actualdeparturetime: actualdepartureTime.format("HH:mm"),  // Actual departure time in HH:mm, if delay
+					waitingtime: actualwaitingTime.get("minutes"),	// Time until departure, in minutes
+					line: departure.transportNumber,		// Line number/name of departure
+					type: departureType,				// Short category code for departure
+					to: departureTo					// Destination/Direction
+				});
+			}
+
+
+			else
+
 			if (waitingTime.get("minutes") > this.config.skipMinutes) {
 				this.departures.push({
 					timestamp: departureTime,			// Departure timestamp, used for sorting
 					departuretime: departureTime.format("HH:mm"),	// Departure time in HH:mm, used for display
+					actualdeparturetime: actualdepartureTime.format("HH:mm"),  // Actual departure time in HH:mm, used for display
 					waitingtime: waitingTime.get("minutes"),	// Time until departure, in minutes
 					line: departure.transportNumber,		// Line number/name of departure
 					type: departureType,				// Short category code for departure
